@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 
 @MappedSuperclass
 public abstract class BaseEntity {
+
+    //125. JPA Mapped Super Class
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
