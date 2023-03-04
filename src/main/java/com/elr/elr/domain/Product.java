@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @AttributeOverrides({
         @AttributeOverride(
                 name = "createdDate",
-                column = @Column( name = "createdDate")
+                column = @Column(name = "createdDate")
         )
 })
 public class Product extends BaseEntity {
