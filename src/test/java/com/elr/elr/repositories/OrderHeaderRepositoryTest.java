@@ -4,6 +4,9 @@ import com.elr.elr.domain.OrderHeader;
 
 
 import com.elr.elr.domain.OrderLine;
+import com.elr.elr.domain.Product;
+import com.elr.elr.domain.ProductStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -22,6 +25,17 @@ class OrderHeaderRepositoryTest {
     @Autowired
     OrderHeaderRepository orderHeaderRepository;
 
+    @Autowired
+    ProductRepository productRepository;
+    Product product;
+
+    @BeforeEach
+    void setUp() {
+        Product newProduct = new Product();
+        newProduct.setProductStatus(ProductStatus.NEW);
+        newProduct.setDescription("test product");
+        product = productRepository.saveAndFlush(newProduct);
+    }
     @Test
     void testSaveOrderWithLine() {
         /*ya tiene orderheader table  la propedad cascadeType.pesist*/
@@ -30,6 +44,8 @@ class OrderHeaderRepositoryTest {
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(5);
+        orderLine.setProduct(product);
+
         //estas dos lineas son importantes en el orden
         orderHeader.setOrderLines(Set.of(orderLine));
         orderLine.setOrderHeader(orderHeader);
