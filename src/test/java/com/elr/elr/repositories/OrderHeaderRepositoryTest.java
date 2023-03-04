@@ -24,20 +24,29 @@ class OrderHeaderRepositoryTest {
 
     @Test
     void testSaveOrderWithLine() {
+        /*ya tiene orderheader table  la propedad cascadeType.pesist*/
         OrderHeader orderHeader = new OrderHeader();
         orderHeader.setCustomer("New Customer");
-        OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(5);
-        // imortantisimas estas dos lineas  hay que recordar que aca no hay cascada.pesistenc
+        //estas dos lineas son importantes en el orden
         orderHeader.setOrderLines(Set.of(orderLine));
         orderLine.setOrderHeader(orderHeader);
+
+        OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
+
+        orderHeaderRepository.flush();
 
         assertNotNull(savedOrder);
         assertNotNull(savedOrder.getId());
         assertNotNull(savedOrder.getOrderLines());
         assertEquals(savedOrder.getOrderLines().size(), 1);
+
+        OrderHeader fetchedOrder = orderHeaderRepository.getById(savedOrder.getId());
+
+        assertNotNull(fetchedOrder);
+        assertEquals(fetchedOrder.getOrderLines().size(), 1);
     }
 
     @Test

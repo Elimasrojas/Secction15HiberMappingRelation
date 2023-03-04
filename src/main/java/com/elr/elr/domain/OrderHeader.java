@@ -82,7 +82,7 @@ public class OrderHeader extends BaseEntity{
     /*@OneToMany(mappedBy = "orderHeader") orderHeader=este nombre se debe por qye se encuentra en la tabla
     * OrderLine como atrubuto referenciado para relacion
     * */
-    @OneToMany(mappedBy = "orderHeader")
+    @OneToMany(mappedBy = "orderHeader",cascade = CascadeType.PERSIST)
     private Set<OrderLine> orderLines;
 
     public Set<OrderLine> getOrderLines() {
