@@ -60,6 +60,12 @@ public class OrderHeader extends BaseEntity{
     @Embedded
     private Address billToAddress;
 
+    /*
+    * ejmplo de una clase enumerada con sus get a setter con su anotacion @Enumerated(EnumType.STRING) para
+    * simular el campo con cadenas de texto. NEW, IN_PROCESS, COMPLETE
+    * */
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     public String getCustomer() {
         return customer;
     }
@@ -85,6 +91,14 @@ public class OrderHeader extends BaseEntity{
         this.billToAddress = billToAddress;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,7 +109,9 @@ public class OrderHeader extends BaseEntity{
             return false;
         if (getShippingAddress() != null ? !getShippingAddress().equals(that.getShippingAddress()) : that.getShippingAddress() != null)
             return false;
-        return getBillToAddress() != null ? getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() == null;
+        if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null)
+            return false;
+        return getOrderStatus() == that.getOrderStatus();
     }
 
     @Override
@@ -104,6 +120,7 @@ public class OrderHeader extends BaseEntity{
         result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
         result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
         result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
+        result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
         return result;
     }
 }
