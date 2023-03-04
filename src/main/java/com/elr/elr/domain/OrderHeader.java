@@ -38,10 +38,18 @@ import jakarta.persistence.*;
                 column = @Column(name = "bill_to_zip_code")
         )
 })
-
+/*
+* Extiende de BaseEntity (MappedSuperclass) el cual es una clase abtracta
+* toma todas sus propiedades
+* */
 public class OrderHeader extends BaseEntity{
 
     private String customer;
+
+    /* shippingAddress y billToAddress son un ejemlpo de  Embedded y mediante AttributeOverrides declaramos
+     sus propiedades
+
+     */
     @Embedded
     private Address shippingAddress;
 
