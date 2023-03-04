@@ -40,15 +40,19 @@ import jakarta.persistence.*;
 })
 /*
 * Extiende de BaseEntity (MappedSuperclass) el cual es una clase abtracta
-* toma todas sus propiedades
+* toma todas sus propiedades.
+*
 * */
 public class OrderHeader extends BaseEntity{
 
     private String customer;
 
     /* shippingAddress y billToAddress son un ejemlpo de  Embedded y mediante AttributeOverrides declaramos
-     sus propiedades
-
+     sus propiedades que vienen de Address (@Embeddable) por ejemplo:
+     @AttributeOverride(
+                name = "shippingAddress.state",
+                column = @Column(name = "shipping_state")
+        )
      */
     @Embedded
     private Address shippingAddress;
