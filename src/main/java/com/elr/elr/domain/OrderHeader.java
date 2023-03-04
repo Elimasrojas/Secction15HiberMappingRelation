@@ -36,9 +36,19 @@ import jakarta.persistence.*;
         @AttributeOverride(
                 name = "billToAddress.zipCode",
                 column = @Column(name = "bill_to_zip_code")
+        ),
+        @AttributeOverride(
+                name = "createdDate",
+                column = @Column(name = "createdDate")
         )
 })
-/*
+/*lo podemos traer de BaseEntity y personalizar el norbre de la columna
+@AttributeOverride(
+                name = "createdDate",
+                column = @Column(name = "createdDate")  // si cambiamos e l nombre
+                                                            aca lo cambiamos en el script flyway
+        )
+
 * Extiende de BaseEntity (MappedSuperclass) el cual es una clase abtracta
 * toma todas sus propiedades.
 *
