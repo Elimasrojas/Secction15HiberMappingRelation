@@ -2,6 +2,8 @@ package com.elr.elr.domain;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 
 @Entity
 @AttributeOverrides({
@@ -76,6 +78,21 @@ public class OrderHeader extends BaseEntity{
     * */
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
+    /*@OneToMany(mappedBy = "orderHeader") orderHeader=este nombre se debe por qye se encuentra en la tabla
+    * OrderLine como atrubuto referenciado para relacion
+    * */
+    @OneToMany(mappedBy = "orderHeader")
+    private Set<OrderLine> orderLines;
+
+    public Set<OrderLine> getOrderLines() {
+        return orderLines;
+    }
+
+    public void setOrderLines(Set<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
+
     public String getCustomer() {
         return customer;
     }
@@ -109,11 +126,15 @@ public class OrderHeader extends BaseEntity{
         this.orderStatus = orderStatus;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OrderHeader that)) return false;
+        if (!(o instanceof OrderHeader)) return false;
         if (!super.equals(o)) return false;
+
+        OrderHeader that = (OrderHeader) o;
 
         if (getCustomer() != null ? !getCustomer().equals(that.getCustomer()) : that.getCustomer() != null)
             return false;
@@ -121,7 +142,8 @@ public class OrderHeader extends BaseEntity{
             return false;
         if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null)
             return false;
-        return getOrderStatus() == that.getOrderStatus();
+        if (getOrderStatus() != that.getOrderStatus()) return false;
+        return getOrderLines() != null ? getOrderLines().equals(that.getOrderLines()) : that.getOrderLines() == null;
     }
 
     @Override
