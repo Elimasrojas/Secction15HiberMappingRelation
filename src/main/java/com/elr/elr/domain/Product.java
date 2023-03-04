@@ -2,6 +2,8 @@ package com.elr.elr.domain;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @AttributeOverrides({
         @AttributeOverride(
@@ -20,6 +22,26 @@ public class Product extends BaseEntity {
     private String description;
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
+
+
+    /*
+    * @JoinTable(name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"), //llave foranea de producto en la product_category
+            inverseJoinColumns = @JoinColumn(name = "category_id")) //esat es la otra llave de la product_category
+    */
+    @ManyToMany
+    @JoinTable(name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories;
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
 
     public String getDescription() {
         return description;
@@ -45,7 +67,8 @@ public class Product extends BaseEntity {
 
         if (getDescription() != null ? !getDescription().equals(product.getDescription()) : product.getDescription() != null)
             return false;
-        return getProductStatus() == product.getProductStatus();
+        if (getProductStatus() != product.getProductStatus()) return false;
+        return getCategories() != null ? getCategories().equals(product.getCategories()) : product.getCategories() == null;
     }
 
     @Override
@@ -53,6 +76,7 @@ public class Product extends BaseEntity {
         int result = super.hashCode();
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
         result = 31 * result + (getProductStatus() != null ? getProductStatus().hashCode() : 0);
+        result = 31 * result + (getCategories() != null ? getCategories().hashCode() : 0);
         return result;
     }
 }
