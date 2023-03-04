@@ -9,6 +9,13 @@ import jakarta.persistence.*;
                 column = @Column(name = "createdDate")
         )
 })
+
+/*
+* Para cambiar el nombre de la columna -> @Column(name = "createdDate")->
+* 1.sed de borrar el registro dela tabla flyway que contiene el historico
+* 2 modificar el script sql del archivo flyway que contiene el nombre de la tabla
+* 3 Cambiar el  nombre de la tabla en ("tabla_") en column = @Column(name = "tabla_createdDate")
+ * */
 public class Product extends BaseEntity {
     private String description;
     @Enumerated(EnumType.STRING)
