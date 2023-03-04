@@ -47,8 +47,10 @@ class OrderHeaderRepositoryTest {
         orderLine.setProduct(product);
 
         //estas dos lineas son importantes en el orden
-        orderHeader.setOrderLines(Set.of(orderLine));
-        orderLine.setOrderHeader(orderHeader);
+        //orderHeader.setOrderLines(Set.of(orderLine));
+        //orderLine.setOrderHeader(orderHeader);
+        //otra forma de hacelo pero mas elegante
+        orderHeader.addOrderLine(orderLine);
 
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
