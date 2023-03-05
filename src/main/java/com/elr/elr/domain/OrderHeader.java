@@ -58,7 +58,8 @@ import java.util.Set;
 * */
 public class OrderHeader extends BaseEntity{
 
-    private String customer;
+    @ManyToOne
+    private Customer customer;
 
     /* shippingAddress y billToAddress son un ejemlpo de  Embedded y mediante AttributeOverrides declaramos
      sus propiedades que vienen de Address (@Embeddable) por ejemplo:
@@ -103,11 +104,11 @@ public class OrderHeader extends BaseEntity{
         this.orderLines = orderLines;
     }
 
-    public String getCustomer() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(String customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 

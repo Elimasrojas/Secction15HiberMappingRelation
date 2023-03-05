@@ -1,11 +1,8 @@
 package com.elr.elr.repositories;
 
-import com.elr.elr.domain.OrderHeader;
+import com.elr.elr.domain.*;
 
 
-import com.elr.elr.domain.OrderLine;
-import com.elr.elr.domain.Product;
-import com.elr.elr.domain.ProductStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,9 @@ class OrderHeaderRepositoryTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
     Product product;
 
     @BeforeEach
@@ -40,7 +40,11 @@ class OrderHeaderRepositoryTest {
     void testSaveOrderWithLine() {
         /*ya tiene orderheader table  la propedad cascadeType.pesist*/
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("New Customer");
+        Customer customer = new Customer();
+        customer.setCustomerName("New Customer");
+        Customer savedCustomer = customerRepository.save(customer);
+        //orderHeader.setCustomer("New Customer");
+        orderHeader.setCustomer(savedCustomer);
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(5);
@@ -70,7 +74,11 @@ class OrderHeaderRepositoryTest {
     @Test
     void testSaveOrder() {
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("New Customer");
+        Customer customer = new Customer();
+        customer.setCustomerName("New Customer");
+        Customer savedCustomer = customerRepository.save(customer);
+
+        orderHeader.setCustomer(savedCustomer);
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         assertNotNull(savedOrder);
