@@ -2,7 +2,6 @@ package com.elr.elr.repositories;
 
 import com.elr.elr.domain.*;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +9,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Set;
+import jakarta.persistence.EntityNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @ActiveProfiles("local")
 @DataJpaTest
@@ -27,6 +28,9 @@ class OrderHeaderRepositoryTest {
 
     @Autowired
     CustomerRepository customerRepository;
+
+    //@Autowired
+    //OrderApprovalRepository orderApprovalRepository;
     Product product;
 
     @BeforeEach
@@ -56,6 +60,15 @@ class OrderHeaderRepositoryTest {
         //otra forma de hacelo pero mas elegante
         orderHeader.addOrderLine(orderLine);
 
+
+        OrderApproval approval = new OrderApproval();
+        approval.setApprovedBy("me");
+        //no se necesita porque se presistio en la batla con esta instruccion
+        // @OneToOne(cascade = CascadeType.PERSIST)
+        //OrderApproval savedApproval = orderApprovalRepository.save(approval);
+        orderHeader.setOrderApproval(approval);
+
+
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         orderHeaderRepository.flush();
@@ -65,7 +78,7 @@ class OrderHeaderRepositoryTest {
         assertNotNull(savedOrder.getOrderLines());
         assertEquals(savedOrder.getOrderLines().size(), 1);
 
-        OrderHeader fetchedOrder = orderHeaderRepository.getById(savedOrder.getId());
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
 
         assertNotNull(fetchedOrder);
         assertEquals(fetchedOrder.getOrderLines().size(), 1);
@@ -91,4 +104,46 @@ class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder.getCreatedDate());
         assertNotNull(fetchedOrder.getLastModifiedDate());
     }
+
+    @Test
+    void testDeleteCascade() {
+
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("new Customer");
+        orderHeader.setCustomer(customerRepository.save(customer));
+
+        OrderLine orderLine = new OrderLine();
+        orderLine.setQuantityOrdered(3);
+        orderLine.setProduct(product);
+
+        //tabla huerfana alhacel el delete en cascada esta tambien se borra
+        OrderApproval orderApproval = new OrderApproval();
+        orderApproval.setApprovedBy("me");
+        orderHeader.setOrderApproval(orderApproval);
+
+        orderHeader.addOrderLine(orderLine);
+        OrderHeader savedOrder = orderHeaderRepository.saveAndFlush(orderHeader);
+
+        System.out.println("order saved and flushed");
+
+        orderHeaderRepository.deleteById(savedOrder.getId());
+        orderHeaderRepository.flush();
+        //OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+
+        //Method threw 'jakarta.persistence.EntityNotFoundException' exception.
+        //aca tenemos unerror por que devuelve vacio y no null que es lo que se esperaba
+        /*
+        assertThrows(EntityNotFoundException.class, () -> {
+
+            OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+            assertNull(fetchedOrder.getId());
+        },"error");
+
+        */
+
+
+
+    }
+
 }

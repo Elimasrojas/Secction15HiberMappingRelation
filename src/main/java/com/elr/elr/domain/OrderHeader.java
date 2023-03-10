@@ -1,6 +1,7 @@
 package com.elr.elr.domain;
 
 import jakarta.persistence.*;
+import org.yaml.snakeyaml.DumperOptions;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -83,9 +84,42 @@ public class OrderHeader extends BaseEntity{
 
     /*@OneToMany(mappedBy = "orderHeader") orderHeader=este nombre se debe por qye se encuentra en la tabla
     * OrderLine como atrubuto referenciado para relacion
+    *
+    * CascadeType.REMOVE con este podemos pasar el test en OrderHeaderRepositoryTest en @Test
+      void testDeleteCascade()
+      * eliminamos en cascada para no rompre reglas de integridad
     * */
-    @OneToMany(mappedBy = "orderHeader",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST, CascadeType.REMOVE} )
     private Set<OrderLine> orderLines;
+    /*
+    * Realacion uno a uno
+    *  CascadeType.PERSIST=guardamos en la tabla OrderApproval
+    *       si no  tenemos pesist sale este error -->object references an unsaved transient instance -
+    *       save the transient instance before flushing
+    *  orphanRemoval = true con esta orden JPA sabe que es una tabla huefana
+    *                       y le decimos vaya y borre el dato huerfano
+    * @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
+    *
+    * CascadeType.REMOVE->al no tener esta cacada violamos llaves de integrida
+    * alter table order_approval
+        add column order_header_id bigint;
+
+        alter table order_approval
+        add constraint order_hdr_fk
+        foreign key (order_header_id) references order_header (id);
+     * */
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE },mappedBy = "orderHeader")
+    private OrderApproval orderApproval;
+
+    public OrderApproval getOrderApproval() {
+        return orderApproval;
+    }
+
+    public void setOrderApproval(OrderApproval orderApproval) {
+        this.orderApproval = orderApproval;
+        //forzamos la relacion
+        orderApproval.setOrderHeader(this);
+    }
 
     public void addOrderLine(OrderLine orderLine) {
         if (orderLines == null) {
@@ -94,14 +128,6 @@ public class OrderHeader extends BaseEntity{
 
         orderLines.add(orderLine);
         orderLine.setOrderHeader(this);
-    }
-
-    public Set<OrderLine> getOrderLines() {
-        return orderLines;
-    }
-
-    public void setOrderLines(Set<OrderLine> orderLines) {
-        this.orderLines = orderLines;
     }
 
     public Customer getCustomer() {
@@ -120,7 +146,6 @@ public class OrderHeader extends BaseEntity{
         this.shippingAddress = shippingAddress;
     }
 
-
     public Address getBillToAddress() {
         return billToAddress;
     }
@@ -137,7 +162,13 @@ public class OrderHeader extends BaseEntity{
         this.orderStatus = orderStatus;
     }
 
+    public Set<OrderLine> getOrderLines() {
+        return orderLines;
+    }
 
+    public void setOrderLines(Set<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -164,6 +195,7 @@ public class OrderHeader extends BaseEntity{
         result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
         result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
         result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
+        result = 31 * result + (getOrderLines() != null ? getOrderLines().hashCode() : 0);
         return result;
     }
 }

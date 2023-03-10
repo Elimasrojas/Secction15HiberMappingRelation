@@ -35,14 +35,6 @@ public class Product extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories;
 
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -59,16 +51,25 @@ public class Product extends BaseEntity {
         this.productStatus = productStatus;
     }
 
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Product product)) return false;
+        if (!(o instanceof Product)) return false;
         if (!super.equals(o)) return false;
+
+        Product product = (Product) o;
 
         if (getDescription() != null ? !getDescription().equals(product.getDescription()) : product.getDescription() != null)
             return false;
-        if (getProductStatus() != product.getProductStatus()) return false;
-        return getCategories() != null ? getCategories().equals(product.getCategories()) : product.getCategories() == null;
+        return getProductStatus() == product.getProductStatus();
     }
 
     @Override
@@ -76,7 +77,6 @@ public class Product extends BaseEntity {
         int result = super.hashCode();
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
         result = 31 * result + (getProductStatus() != null ? getProductStatus().hashCode() : 0);
-        result = 31 * result + (getCategories() != null ? getCategories().hashCode() : 0);
         return result;
     }
 }
