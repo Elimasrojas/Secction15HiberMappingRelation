@@ -130,6 +130,15 @@ public class OrderHeader extends BaseEntity{
         orderLine.setOrderHeader(this);
     }
 
+    public Set<OrderLine> getOrderLines() {
+        return orderLines;
+    }
+
+    public void setOrderLines(Set<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
+
+
     public Customer getCustomer() {
         return customer;
     }
@@ -162,13 +171,6 @@ public class OrderHeader extends BaseEntity{
         this.orderStatus = orderStatus;
     }
 
-    public Set<OrderLine> getOrderLines() {
-        return orderLines;
-    }
-
-    public void setOrderLines(Set<OrderLine> orderLines) {
-        this.orderLines = orderLines;
-    }
 
     @Override
     public boolean equals(Object o) {

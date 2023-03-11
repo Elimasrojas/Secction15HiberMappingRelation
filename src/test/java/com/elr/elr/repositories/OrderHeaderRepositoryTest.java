@@ -133,14 +133,14 @@ class OrderHeaderRepositoryTest {
 
         //Method threw 'jakarta.persistence.EntityNotFoundException' exception.
         //aca tenemos unerror por que devuelve vacio y no null que es lo que se esperaba
-        /*
+    /*
         assertThrows(EntityNotFoundException.class, () -> {
 
             OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
-            assertNull(fetchedOrder.getId());
+            assertNotNull(fetchedOrder.getId());
         },"error");
+    */
 
-        */
 
 
 
