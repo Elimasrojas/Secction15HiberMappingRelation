@@ -36,6 +36,35 @@ public class DataLoadTest {
     @Autowired
     ProductRepository productRepository;
 
+    /**
+     * From MySQL Workbench (or other client, run the following SQL statment, then test below.) Once
+     * you commit, the test will complete. If test completes immediately, check autocommit settings in client.
+     * Desde MySQL Workbench (u otro cliente, ejecute la siguiente instrucción SQL y luego pruebe a continuación). Una vez
+     *       * te comprometes, la prueba se completará. Si la prueba se completa de inmediato,
+     *       verifique la configuración de confirmación automática en el cliente.
+     *
+     *  {@code SELECT * FROM orderservice.order_header where id = 1 for update; }
+     */
+    @Rollback(value = false)
+    @Test
+    void testDBLock() {
+        Long id = 1l;
+
+        OrderHeader orderHeader = orderHeaderRepository.findById(id).get();
+
+        Address billTo = new Address();
+        billTo.setAddress("Bill me ");
+        orderHeader.setBillToAddress(billTo);
+        orderHeaderRepository.saveAndFlush(orderHeader);
+
+        System.out.println("I updated the order");
+    }
+    /*
+    * Ralacionado con OrderHeader
+    @ManyToOne (fetch = FetchType.LAZY) //por defecto es eager
+    private Customer customer
+    * la idea es cordar el tiempo de las consultas
+    * */
     @Test
     void testN_PlusOneProblem() {
 
