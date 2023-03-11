@@ -1,6 +1,8 @@
 package com.elr.elr.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.yaml.snakeyaml.DumperOptions;
 
 import java.util.HashSet;
@@ -59,7 +61,7 @@ import java.util.Set;
 * */
 public class OrderHeader extends BaseEntity{
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY) //por defecto es eager
     private Customer customer;
 
     /* shippingAddress y billToAddress son un ejemlpo de  Embedded y mediante AttributeOverrides declaramos
@@ -88,8 +90,12 @@ public class OrderHeader extends BaseEntity{
     * CascadeType.REMOVE con este podemos pasar el test en OrderHeaderRepositoryTest en @Test
       void testDeleteCascade()
       * eliminamos en cascada para no rompre reglas de integridad
+      *
+      * EAGER->
     * */
-    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST, CascadeType.REMOVE} )
+    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT) //controlamos la forma con hace la consulta eqger hay quer experimentar rediemtos
+                                // de tiempo con grandes cantidades de datos
     private Set<OrderLine> orderLines;
     /*
     * Realacion uno a uno
@@ -108,7 +114,9 @@ public class OrderHeader extends BaseEntity{
         add constraint order_hdr_fk
         foreign key (order_header_id) references order_header (id);
      * */
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE },mappedBy = "orderHeader")
+    //@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE },mappedBy = "orderHeader")
+    @Fetch(FetchMode.SELECT)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE })//se borra mapping para ganar velocidad
     private OrderApproval orderApproval;
 
     public OrderApproval getOrderApproval() {

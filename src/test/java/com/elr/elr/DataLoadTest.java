@@ -13,10 +13,8 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @ActiveProfiles("local")
@@ -37,6 +35,32 @@ public class DataLoadTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Test
+    void testN_PlusOneProblem() {
+
+        Customer customer = customerRepository.findCustomerByCustomerNameIgnoreCase(TEST_CUSTOMER).get();
+
+        IntSummaryStatistics totalOrdered = orderHeaderRepository.findAllByCustomer(customer).stream()
+                .flatMap(orderHeader -> orderHeader.getOrderLines().stream())
+                .collect(Collectors.summarizingInt(ol -> ol.getQuantityOrdered()));
+
+        System.out.println("total ordered: " + totalOrdered.getSum());
+    }
+
+    /*
+    *
+    * eager -> trae el join de todas las tablas
+    * lazy-> trae consultas individuales */
+    @Test
+    void testLazyVsEager() {
+        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(5l);
+
+        System.out.println("Order Id is: " + orderHeader.getId());
+
+        System.out.println("Customer Name is: " + orderHeader.getCustomer().getCustomerName());
+
+    }
 
     //@Disabled
     //@Rollback(value = false).
