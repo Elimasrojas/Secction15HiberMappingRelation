@@ -1,6 +1,8 @@
 package com.elr.elr.bootstrap;
 
+import com.elr.elr.domain.Customer;
 import com.elr.elr.domain.OrderHeader;
+import com.elr.elr.repositories.CustomerRepository;
 import com.elr.elr.repositories.OrderHeaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class Bootstrap implements CommandLineRunner {
     @Autowired
     OrderHeaderRepository orderHeaderRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     @Autowired
     BootstrapOrderService bootstrapOrderService;
@@ -54,5 +59,12 @@ public class Bootstrap implements CommandLineRunner {
 //                System.out.println(cat.getDescription() );
 //            });
 //        });
+        Customer customer = new Customer();
+        customer.setCustomerName("Testing Version");
+        Customer savedCustomer = customerRepository.save(customer);
+
+        System.out.println("Version is: " + savedCustomer.getVersion());
+
+        customerRepository.deleteById(savedCustomer.getId());
     }
 }
