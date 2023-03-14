@@ -12,25 +12,47 @@ public class Bootstrap implements CommandLineRunner {
     @Autowired
     OrderHeaderRepository orderHeaderRepository;
 
+    @Autowired
+    BootstrapOrderService bootstrapOrderService;
+
+//    @Transactional
+//    public void readOrderData(){
+//        OrderHeader orderHeader= orderHeaderRepository.findById(1L).get();
+//        orderHeader.getOrderLines().forEach(ol -> {
+//            System.out.println(ol.getProduct().getDescription());
+//            /*
+//             * Caused by: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role:
+//             *  com.elr.elr.domain.Product.categories: could not initialize proxy - no Session
+//             * necesita @Transacional
+//
+//             * */
+//            ol.getProduct().getCategories().forEach(cat ->{
+//                System.out.println(cat.getDescription() );
+//            });
+//        });
+//    }
+
     /*
     * SE EJECUTA E INICIA CON SPING CONTEXT
     * */
-    @Transactional
+
+
     @Override
     public void run(String... args) throws Exception {
+        bootstrapOrderService.readOrderData();
         //System.out.println("I was called!");
-        OrderHeader orderHeader= orderHeaderRepository.findById(1L).get();
-        orderHeader.getOrderLines().forEach(ol -> {
-            System.out.println(ol.getProduct().getDescription());
-            /*
-            * Caused by: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role:
-            *  com.elr.elr.domain.Product.categories: could not initialize proxy - no Session
-            * necesita @Transacional
-
-            * */
-            ol.getProduct().getCategories().forEach(cat ->{
-                System.out.println(cat.getDescription() );
-            });
-        });
+//        OrderHeader orderHeader= orderHeaderRepository.findById(1L).get();
+//        orderHeader.getOrderLines().forEach(ol -> {
+//            System.out.println(ol.getProduct().getDescription());
+//            /*
+//            * Caused by: org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role:
+//            *  com.elr.elr.domain.Product.categories: could not initialize proxy - no Session
+//            * necesita @Transacional
+//
+//            * */
+//            ol.getProduct().getCategories().forEach(cat ->{
+//                System.out.println(cat.getDescription() );
+//            });
+//        });
     }
 }
