@@ -45,7 +45,7 @@ public class DataLoadTest {
      *
      *  {@code SELECT * FROM orderservice.order_header where id = 1 for update; }
      */
-    @Rollback(value = false)
+    //@Rollback(value = false)
     @Test
     void testDBLock() {
         Long id = 1l;

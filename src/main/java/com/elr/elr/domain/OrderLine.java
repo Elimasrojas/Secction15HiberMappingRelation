@@ -2,8 +2,16 @@ package com.elr.elr.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
+
 @Entity
 public class OrderLine extends BaseEntity {
+    /*
+    *se activa para el bloque optimista
+    * */
+    @Version
+    private Integer version;
+
     private Integer quantityOrdered;
 
     @ManyToOne
@@ -12,6 +20,15 @@ public class OrderLine extends BaseEntity {
     //creamos la relacion con la tabla producto unidirecccional
     @ManyToOne
     private Product product;
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public Integer getQuantityOrdered() {
         return quantityOrdered;
     }
