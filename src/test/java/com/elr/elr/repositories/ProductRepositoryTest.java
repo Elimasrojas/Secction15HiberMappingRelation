@@ -2,17 +2,25 @@ package com.elr.elr.repositories;
 
 import com.elr.elr.domain.Product;
 import com.elr.elr.domain.ProductStatus;
+import com.elr.elr.services.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("local")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ComponentScan(basePackageClasses = {ProductService.class})
 class ProductRepositoryTest {
+
+    @Autowired
+    ProductService productService;
+
     @Autowired
     ProductRepository productRepository;
     @Test
@@ -32,6 +40,8 @@ class ProductRepositoryTest {
 
         Product saveProduct = productRepository.save(product);
         Product fetchedProduct= productRepository.getReferenceById(saveProduct.getId());
+
+
         assertNotNull(fetchedProduct);
         assertNotNull(fetchedProduct.getDescription());
         assertNotNull(fetchedProduct.getCreatedDate());
@@ -43,11 +53,14 @@ class ProductRepositoryTest {
         product.setDescription("My Product");
         product.setProductStatus(ProductStatus.NEW);
 
-        Product savedProduct = productRepository.saveAndFlush(product);
+        //Product savedProduct = productRepository.saveAndFlush(product);
+        Product savedProduct= productService.saveProduct(product);
 
-        savedProduct.setQuantityOnHand(25);
+        //savedProduct.setQuantityOnHand(25);
 
-        Product savedProduct2 = productRepository.saveAndFlush(savedProduct);
+        //Product savedProduct2 = productRepository.saveAndFlush(savedProduct);
+        Product savedProduct2 = productService.updateQOH(savedProduct.getId(),25);
+
 
         System.out.println(savedProduct2.getQuantityOnHand());
     }
