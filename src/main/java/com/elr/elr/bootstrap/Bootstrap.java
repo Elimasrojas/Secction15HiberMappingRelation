@@ -2,8 +2,11 @@ package com.elr.elr.bootstrap;
 
 import com.elr.elr.domain.Customer;
 import com.elr.elr.domain.OrderHeader;
+import com.elr.elr.domain.Product;
+import com.elr.elr.domain.ProductStatus;
 import com.elr.elr.repositories.CustomerRepository;
 import com.elr.elr.repositories.OrderHeaderRepository;
+import com.elr.elr.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -41,9 +44,26 @@ public class Bootstrap implements CommandLineRunner {
     * SE EJECUTA E INICIA CON SPING CONTEXT
     * */
 
+    @Autowired
+    ProductService productService;
+    private void updateProduct(){
+        System.out.println("Metodo updateProduct");
+        Product product = new Product();
+        product.setDescription("My Product");
+        product.setProductStatus(ProductStatus.NEW);
+
+        Product savedProduct = productService.saveProduct(product);
+
+        Product savedProduct2 = productService.updateQOH(savedProduct.getId(), 25);
+
+        System.out.println("Updated Qty: " + savedProduct2.getQuantityOnHand());
+        System.out.println("Fin metodo updateProduct");
+    }
+
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println("Inicia metodo run");
         //bootstrapOrderService.readOrderData();
         //System.out.println("I was called!");
 //        OrderHeader orderHeader= orderHeaderRepository.findById(1L).get();
@@ -72,6 +92,8 @@ public class Bootstrap implements CommandLineRunner {
         *
         * */
 
+        updateProduct();
+        //Error ->Cannot execute statement in a READ ONLY transaction.
         bootstrapOrderService.readOrderData();
 
         Customer customer = new Customer();
@@ -88,5 +110,7 @@ public class Bootstrap implements CommandLineRunner {
         System.out.println("Version is: " + savedCustomer3.getVersion());
 
         customerRepository.delete(savedCustomer3);
+
+        System.out.println("Fin metodo run");
     }
 }

@@ -3,6 +3,7 @@ package com.elr.elr.services;
 import com.elr.elr.domain.Product;
 import com.elr.elr.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -18,6 +19,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.saveAndFlush(product);
     }
 
+    @Transactional
     @Override
     public Product updateQOH(Long id, Integer quantityOnHand) {
         Product product = productRepository.findById(id)

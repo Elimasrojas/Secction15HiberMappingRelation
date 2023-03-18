@@ -49,6 +49,7 @@ class ProductRepositoryTest {
     }
     @Test
     void addAndUpdateProduct() {
+        System.out.println("Inicia Test metodo addAndUpdateProduct");
         Product product = new Product();
         product.setDescription("My Product");
         product.setProductStatus(ProductStatus.NEW);
@@ -63,6 +64,7 @@ class ProductRepositoryTest {
 
 
         System.out.println(savedProduct2.getQuantityOnHand());
+        System.out.println("Fin Test metodo addAndUpdateProduct");
     }
 
 }
